@@ -20,11 +20,12 @@ def main():
     from .agent import ask
     from agents.exceptions import AgentsException
     from openai import APIError
+    from .errors import explain_error
     try:
         result = asyncio.run(ask(args.question))
     except (ValueError, APIError, AgentsException) as error:
         # Do not dump HTTP headers, credentials, or the full API exception.
-        print(f'Agent could not run ({type(error).__name__}). Check your .env, model access, billing, and network.')
+        print(explain_error(error))
         raise SystemExit(1)
     events = []
     for item in result.new_items:
